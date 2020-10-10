@@ -1,4 +1,4 @@
-module github.com/TicketsBot/database
+module github.com/timnboys/database
 
 go 1.14
 
