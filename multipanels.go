@@ -81,7 +81,8 @@ WHERE
 }
 
 func (p *MultiPanelTable) GetByGuild(guildId uint64) (panels []MultiPanel, e error) {
-	query := `SELECT * from multi_panels WHERE "guild_id" = $1;`
+	query := fmt.Sprintf("SELECT * from multi_panels WHERE 'guild_id' = %d", guildId) 
+	//query := `SELECT * from multi_panels WHERE "guild_id" = $1;`
 
 	rows, err := p.Query(context.Background(), query, guildId)
 	defer rows.Close()
