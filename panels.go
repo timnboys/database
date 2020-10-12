@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"fmt"
 )
 
 type Panel struct {
@@ -46,7 +47,8 @@ CREATE INDEX IF NOT EXISTS panels_guild_id ON panels("guild_id");`
 }
 
 func (p *PanelTable) Get(messageId uint64) (panel Panel, e error) {
-	query := `SELECT * from panels WHERE "message_id" = $1;`
+	query := fmt.Sprintf("SELECT * from panels WHERE 'message_id' = %d", messageId) 
+	//query := `SELECT * from panels WHERE "message_id" = $1;`
 
 	if err := p.QueryRow(context.Background(), query, messageId).Scan(&panel.MessageId, &panel.ChannelId, &panel.GuildId, &panel.Title, &panel.Content, &panel.Colour, &panel.TargetCategory, &panel.ReactionEmote, &panel.WelcomeMessage); err != nil && err != pgx.ErrNoRows {
 		e = err
@@ -56,7 +58,8 @@ func (p *PanelTable) Get(messageId uint64) (panel Panel, e error) {
 }
 
 func (p *PanelTable) GetByGuild(guildId uint64) (panels []Panel, e error) {
-	query := `SELECT * from panels WHERE "guild_id" = $1;`
+	query := fmt.Sprintf("SELECT * from panels WHERE 'guild_id' = %d", guideId)
+	//query := `SELECT * from panels WHERE "guild_id" = $1;`
 
 	rows, err := p.Query(context.Background(), query, guildId)
 	defer rows.Close()
@@ -103,7 +106,8 @@ UPDATE panels
 }
 
 func (p *PanelTable) Delete(messageId uint64) (err error) {
-	query := `DELETE FROM panels WHERE "message_id"=$1;`
+	query := fmt.Sprintf("DELETE FROM panels WHERE 'message_id' = %d", messageId)
+	//query := `DELETE FROM panels WHERE "message_id"=$1;`
 	_, err = p.Exec(context.Background(), query, messageId)
 	return
 }
